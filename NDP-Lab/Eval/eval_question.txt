@@ -1,0 +1,5 @@
+Write two separate connection-oriented C programs (one for the Server and one for Client) using UNIX socket APIs for following operations with acknowledgements.
+1. Server displays the client’s IP address and port number on the server screen in the form of one string (ip_address:portnumber e.g. 192.16.0.1:8080) and writes the same string in the file. (4M: 2.5M to communication and display and 1.5M to write in file) 
+2. Server should replace the “.” from the ip address with string “dot” and “:” with the string “colon”. (4M: for replacing 3 dots and one colon)
+3. Server sends the replaced string to the client to display (e.g., Output on the screen: 192dot16dot0dot1colon8080). (2M: communication and display)
+

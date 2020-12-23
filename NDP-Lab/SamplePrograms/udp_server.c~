@@ -24,7 +24,7 @@ int main()
 	if(sockfd==-1)
 	{
 		printf("\n Socket creation error");
-			exit(0);
+		exit(0);
 	}
 	serveraddr.sin_family=AF_INET;
 	serveraddr.sin_port=htons(3200);
