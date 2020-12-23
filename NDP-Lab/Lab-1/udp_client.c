@@ -1,72 +1,64 @@
+#include<string.h>
+#include<arpa/inet.h>
+#include<stdlib.h>
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/socket.h>
 #include<sys/types.h>
 #include<netinet/in.h>
-#include<sys/stat.h>
 #include<fcntl.h>
-#include<string.h>
-#define MAXSIZE 50
+#include<sys/stat.h>
 
-main()
+int main()
 {
-	int sockfd,retval,i;
-	int recedbytes,sentbytes;
-	struct sockaddr_in serveraddr, clientaddr;
-	char buff[MAXSIZE];
-	sockfd=socket(AF_INET,SOCK_DGRAM,0);
-	if(sockfd==-1)
+	int s,r,recb,sntb,x;
+	int sa;
+	socklen_t len;
+	printf("INPUT port number: ");
+	scanf("%d", &x);
+	struct sockaddr_in server,client;
+	char buff[50];
+	s=socket(AF_INET,SOCK_DGRAM,0);
+	if(s==-1)
 	{
-		printf("\nSocket Creation Error");
-		return;
-
+		printf("\nSocket creation error.");
+		exit(0);
 	}
-	serveraddr.sin_family=AF_INET;
-	serveraddr.sin_port=htons(3388);
-	serveraddr.sin_addr.s_addr=inet_addr("127.0.0.1");
+	printf("\nSocket created.");
+	server.sin_family=AF_INET;
+	server.sin_port=htons(x);
+	server.sin_addr.s_addr=inet_addr("127.0.0.1");
+	sa=sizeof(server);
+	len=sizeof(server);
 
-	clientaddr.sin_family=AF_INET;
-	clientaddr.sin_port=htons(3389);
-	clientaddr.sin_addr.s_addr=inet_addr("127.0.0.1");
-
-	retval=bind(sockfd,(struct sockaddr*)&clientaddr,sizeof(clientaddr));
-	if(retval==1)
+while(1){
+	
+	printf("\n\n");
+	printf("Enter new string: ");
+	scanf("%s", buff);
+	if(!strcmp(buff,"halt"))
+		break;
+	sntb=sendto(s,buff,sizeof(buff),0,(struct sockaddr *)&server, len);
+	if(sntb==-1)
 	{
-		printf("Binding error");
-		close(sockfd);
-	}
-
-	for (i = 0; ; i+= 1)
-	{
-
-
-		printf("enter the text\n");
-        gets(buff);
-		sentbytes=sendto(sockfd,buff,sizeof(buff),0,
-		(struct sockaddr*)&serveraddr,sizeof(serveraddr));
-
-		if(sentbytes==-1)
-		{
-		printf("sending error");
-		close(sockfd);
-		}
-
-		if (buff[0] == 'h' && buff[1] == 'a' && buff[2] == 'l' && buff[3] == 't')
-		{
-			break;
-		}
-
-		int size=sizeof(serveraddr);
-		recedbytes=recvfrom(sockfd,buff,sizeof(buff),0,(struct sockaddr*)&serveraddr,&size);
-		puts(buff);
-		printf("\n");
-
-		if (buff[0] == 'h' && buff[1] == 'a' && buff[2] == 'l' && buff[3] == 't')
-		{
-			break;
-		}
-
+		close(s);
+		printf("\nMessage sending Failed");
+		exit(0);
 	}
 
-	close(sockfd);
+	recb=recvfrom(s,buff,sizeof(buff),0,(struct sockaddr *)&server,&sa);
+	if(recb==-1)
+	{
+		printf("\nMessage Recieving Failed");	
+		close(s);
+		exit(0);
+	}
+	if(buff[0]==1)
+	printf("\nString is palindrome! Length of string is %d and it contains %d number of vowels. ",buff[1],buff[2]);
+	else
+		printf("\nString is not a palindrome! Length of string is %d and it contains %d number of vowels. ",buff[1],buff[2]);
+
+	}
+	close(s);
+
 }
